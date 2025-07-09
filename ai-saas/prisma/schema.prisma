@@ -1,0 +1,49 @@
+generator client {
+  provider = "prisma-client-js"
+  
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id          Int       @id @default(autoincrement())
+  username    String    @unique @db.VarChar
+  name        String?   @db.VarChar  // Make name optional
+  password    String    @db.VarChar
+  role        String?   @db.VarChar
+  createdAt   DateTime  @default(now()) @map("created_at")
+  email       String?   @unique @db.VarChar
+  wordpress   WordPressCredentials?
+  contentJobs ContentJob[]
+
+  @@map("users")
+}
+
+model ContentJob {
+  id             Int      @id @default(autoincrement())
+  userId         Int      @map("user_id")
+  title          String?  @map("title")
+  mainKeyword    String?  @map("mainKeyword")
+  toneOfVoice    String?  
+  audienceType   String?  
+  contentFormat  String?  
+  Outline        String?  
+  status         String?  @default("pending")
+  createdAt      DateTime @default(now()) @map("created_at")
+  user           User     @relation(fields: [userId], references: [id])
+
+  @@map("content_jobs")
+}
+
+model WordPressCredentials {
+  id                  Int    @id @default(autoincrement())
+  siteUrl             String
+  username            String
+  applicationPassword String
+  userId              Int?   @unique
+  user                User?  @relation(fields: [userId], references: [id])
+}
