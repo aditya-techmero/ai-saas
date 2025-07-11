@@ -19,7 +19,7 @@ export default function Dashboard() {
     if (!isAuthenticated) {
       redirect('/');
     }
-  }, [isAuthenticated]);
+  }, []);
 
   useEffect(() => {
     if (isAuthenticated) {
